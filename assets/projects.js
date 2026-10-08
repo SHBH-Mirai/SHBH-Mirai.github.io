@@ -1,5 +1,5 @@
 // Portfolio data. Add screenshots to assets/img and list them under `imgs`.
-// Client names are intentionally generic.
+// Names are intentionally generic.
 window.PROJECTS = [
   {
     title: "Inventory & Job Costing Platform",
