@@ -58,12 +58,16 @@ function startSpace() {
   const starGeometry = new THREE.BufferGeometry();
   starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
   starGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
-  scene.add(new THREE.Points(starGeometry, new THREE.PointsMaterial({ size: 0.22, map: dotTexture, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })));
+  const starMaterial = new THREE.PointsMaterial({ size: 0.22, map: dotTexture, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+  scene.add(new THREE.Points(starGeometry, starMaterial));
 
-  [[0xff2bd6, -22, 9, -70, 60, 0.10], [0x3a4cff, 18, -8, -80, 70, 0.12], [0xffc94a, 30, 14, -90, 40, 0.05]].forEach(([color, x, y, z, size, opacity]) => {
-    const cloud = new THREE.Sprite(new THREE.SpriteMaterial({ map: dotTexture, color, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending }));
-    cloud.position.set(x, y, z); cloud.scale.set(size, size * 0.6, 1); scene.add(cloud);
-  });
+  // Nebula clouds: [dark colour, dark opacity, daylight colour, daylight opacity, x, y, z, size]
+  const nebulae = [[0xff2bd6, 0.10, 0xff9ccf, 0.35, -22, 9, -70, 60], [0x3a4cff, 0.12, 0xb9a2ff, 0.30, 18, -8, -80, 70], [0xffc94a, 0.05, 0xffc49a, 0.30, 30, 14, -90, 40]]
+    .map(([darkColor, darkOpacity, dayColor, dayOpacity, x, y, z, size]) => {
+      const cloud = new THREE.Sprite(new THREE.SpriteMaterial({ map: dotTexture, transparent: true, depthWrite: false }));
+      cloud.position.set(x, y, z); cloud.scale.set(size, size * 0.6, 1); scene.add(cloud);
+      return { cloud, darkColor, darkOpacity, dayColor, dayOpacity };
+    });
 
   const planet = new THREE.Mesh(new THREE.SphereGeometry(7, 64, 64), new THREE.MeshStandardMaterial({ color: 0x1a1f4a, roughness: 1 }));
   planet.position.z = -45;
@@ -75,7 +79,8 @@ function startSpace() {
   planet.add(atmosphere); // the glow now follows the planet automatically
   scene.add(planet);
 
-  scene.add(new THREE.AmbientLight(0x3a4080, 0.9));
+  const ambient = new THREE.AmbientLight(0x3a4080, 0.9);
+  scene.add(ambient);
   const sun = new THREE.DirectionalLight(0xcfd6ff, 1.6); sun.position.set(-6, 8, 6); scene.add(sun);
 
   const streakTexture = makeTexture(256, 8, (g) => {
@@ -108,6 +113,35 @@ function startSpace() {
   // ---------- 5. Fire particles (one shared pool for trails and explosions) ----------
   const fire = makeFireSystem(CONFIG.particles);
   flyer.add(fire.points);
+
+  // ---------- Theme: deep space (dark) or a pale daylight sky (light) ----------
+  // Glowing "additive" colours look great on black but turn white on a light sky,
+  // so in daylight we switch to normal blending and darker, softer colours.
+  function applyTheme() {
+    const day = document.documentElement.dataset.theme === 'light';
+    const blend = day ? THREE.NormalBlending : THREE.AdditiveBlending;
+    starMaterial.blending = blend; starMaterial.color.set(day ? 0x7d7aa8 : 0xffffff); starMaterial.opacity = day ? 0.55 : 1;
+    nebulae.forEach((n) => {
+      n.cloud.material.blending = blend;
+      n.cloud.material.color.set(day ? n.dayColor : n.darkColor);
+      n.cloud.material.opacity = day ? n.dayOpacity : n.darkOpacity;
+      n.cloud.material.needsUpdate = true;
+    });
+    planet.material.color.set(day ? 0xe9e4fb : 0x1a1f4a);
+    planet.material.transparent = day; planet.material.opacity = day ? 0.45 : 1; planet.material.needsUpdate = true; // a faint daytime moon
+    atmosphere.material.uniforms.c.value.set(day ? 0xff6fcf : 0xff2bd6);
+    atmosphere.material.blending = blend;
+    ambient.intensity = day ? 1.8 : 0.9;
+    glowMaterial.blending = blend;
+    shootingStar.material.blending = blend; shootingStar.material.color.set(day ? 0x8a7fd0 : 0xffffff);
+    // Fire sparks: glow on black; "paint over" on a light sky so orange stays orange.
+    const sparks = fire.points.material;
+    if (day) { sparks.blending = THREE.CustomBlending; sparks.blendSrc = THREE.OneFactor; sparks.blendDst = THREE.OneMinusSrcAlphaFactor; }
+    else sparks.blending = THREE.AdditiveBlending;
+    [starMaterial, atmosphere.material, glowMaterial, shootingStar.material, sparks].forEach((m) => { m.needsUpdate = true; });
+  }
+  applyTheme();
+  new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   // ---------- 6. Layout: where things sit for this screen size ----------
   let viewW = 0, viewH = 0, isPhone = false, halfH = 5, halfW = 8, meteorScale = 1;
