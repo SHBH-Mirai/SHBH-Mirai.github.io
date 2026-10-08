@@ -80,6 +80,7 @@ nav .c{color:var(--text);display:flex;align-items:center;justify-content:space-b
 [data-theme=light] .cls{color:var(--muted)}
 [data-theme=light] .type{color:#262c55}
 [data-theme=light] .facts div{background:rgba(20,26,64,.04);border-color:rgba(40,50,120,.12)}
+[data-theme=light] .facts b{color:var(--gold)}
 [data-theme=light] .facts span{color:var(--muted)}
 [data-theme=light] .hero .btn:not(.p){background:rgba(255,255,255,.7);border-color:rgba(40,50,120,.18);color:var(--text)}
 [data-theme=light] .frame{box-shadow:0 18px 44px -24px rgba(60,40,120,.3)}
