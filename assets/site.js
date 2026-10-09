@@ -76,7 +76,7 @@
       const [text, status] = lines[step];
       log.innerHTML += status === 'go' ? `<span class="go">${text}</span>` : `${text}${status ? `<span class="ok">${status}</span>` : ''}\n`;
       step += 1;
-      bar.style.width = `${(step / lines.length) * 100}%`;
+      bar.style.transform = `scaleX(${step / lines.length})`;
       setTimeout(next, 170);
     };
     next();
@@ -109,7 +109,7 @@
   $('#skills').innerHTML = skills.map((g) => `
     <div class="skill-group">
       <h3>${esc(g.group)}</h3><p>${esc(g.note)}</p>
-      <div class="perks">${g.items.map((s) => `<span class="perk">${esc(s)}</span>`).join('')}</div>
+      <div class="perks">${g.items.map((s) => `<button type="button" class="perk" data-skill="${esc(s)}">${esc(s)}</button>`).join('')}</div>
     </div>`).join('');
 
   // ---------- 7. Certifications (from profile.js) ----------
@@ -120,10 +120,11 @@
     star: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.8 5.5 21l2-7.5L2 9h7z"/></svg>'
   };
   $('#ach').innerHTML = certs.map((c) => `
-    <div class="badge frame rv" style="--rar:${esc(c.color)}">
-      <div class="hex" aria-hidden="true">${icons[c.icon] || icons.star}</div>
-      <h3>${esc(c.title)}</h3><span class="r">${esc(c.level)}</span>
-    </div>`).join('');
+    <button type="button" class="badge frame rv" style="--rar:${esc(c.color)}" aria-pressed="false" aria-label="${esc(c.title)}, ${esc(c.level)}. Show exam details">
+      <span class="face front"><span class="hex" aria-hidden="true">${icons[c.icon] || icons.star}</span>
+      <span class="bt">${esc(c.title)}</span><span class="r">${esc(c.level)}</span><span class="flip-hint" aria-hidden="true">Tap to flip</span></span>
+      <span class="face back"><span class="r">Exam ${esc(c.exam || '')}</span><span class="cv">${esc(c.covers || '')}</span><span class="flip-hint" aria-hidden="true">Tap to flip back</span></span>
+    </button>`).join('');
 
   // ---------- 8. Projects: filters, list, details ----------
   const imgPath = (name) => `assets/img/${name}.webp`;
@@ -135,6 +136,8 @@
   let activeTag = 'All';
   let selected = 0;   // index into projects
   let shot = 0;       // which screenshot is showing
+  let view = 'mock';  // 'mock' (interactive recreation) or 'shots' (real screenshots)
+  let mockPlayer = null;
 
   function renderFilters() {
     const tags = ['All', ...new Set(projects.flatMap((p) => p.tags))];
@@ -164,9 +167,20 @@
   }
 
   function renderDetails() {
+    if (mockPlayer) { mockPlayer.destroy(); mockPlayer = null; }
     const p = projects[selected];
     if (!p) return;
     shot = 0;
+    const mock = p.mock && window.MOCKUPS ? window.MOCKUPS[p.mock] : null;
+    const showMock = mock && (view === 'mock' || !p.imgs.length);
+    const tabs = mock && p.imgs.length
+      ? `<div class="mk-tabs" role="tablist" aria-label="View">
+           <button type="button" role="tab" data-view="mock" aria-selected="${showMock}">Interactive</button>
+           <button type="button" role="tab" data-view="shots" aria-selected="${!showMock}">Real screenshots (${p.imgs.length})</button>
+         </div>` : '';
+    const label = mock && mock.basis === 'screens'
+      ? 'Interactive recreation <span>· rebuilt from the real screens, sample data</span>'
+      : 'Concept recreation <span>· designed from the project description, sample data</span>';
     const many = p.imgs.length > 1;
     const viewer = p.imgs.length
       ? `<div class="viewer">
@@ -178,12 +192,14 @@
       : '<div class="nodata">Screenshots coming soon</div>';
     details.innerHTML = `
       <div class="top"><div class="meta"><span>Industry <b>${esc(p.org)}</b></span></div><h3>${esc(p.title)}</h3></div>
-      ${viewer}
+      ${tabs}
+      ${showMock ? `<div class="mk-wrap"><p class="mk-label"><i></i>${label}</p><div id="mkHost"></div></div>` : viewer}
       <div class="body">
         <div><h4>Overview</h4><p>${esc(p.summary)}</p></div>
         <div><h4>Key features</h4><ul class="obj">${p.points.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
         <div class="slots"><h4>Tech stack</h4>${p.tags.map((t) => `<span class="slot">${esc(t)}</span>`).join('')}</div>
       </div>`;
+    if (showMock) mockPlayer = window.MockKit.mount($('#mkHost'), mock);
     placeDetails();
   }
 
@@ -199,6 +215,12 @@
     $$('.thumbs .th').forEach((t, k) => t.classList.toggle('on', k === shot));
   }
 
+  // Lets cards.js open a project or apply a filter from elsewhere on the page.
+  window.Portfolio = {
+    filter(tag) { activeTag = tag; renderFilters(); renderList(); },
+    open(index) { if (!projects[index]) return; activeTag = 'All'; selected = index; view = 'mock'; renderFilters(); renderList(); }
+  };
+
   filterBar.addEventListener('click', (e) => {
     const button = e.target.closest('button');
     if (!button) return;
@@ -209,8 +231,9 @@
 
   list.addEventListener('click', (e) => {
     const row = e.target.closest('.q');
-    if (!row) return;
+    if (!row || Number(row.dataset.i) === selected) return; // already open: keep the user's place
     selected = Number(row.dataset.i);
+    view = 'mock';
     $$('.q').forEach((q) => {
       const on = q === row;
       q.classList.toggle('on', on);
@@ -221,6 +244,8 @@
   });
 
   details.addEventListener('click', (e) => {
+    const tab = e.target.closest('[data-view]');
+    if (tab) { view = tab.dataset.view; renderDetails(); details.querySelector(`[data-view="${view}"]`)?.focus(); return; }
     const stepButton = e.target.closest('[data-step]');
     const thumb = e.target.closest('[data-shot]');
     const zoom = e.target.closest('.zoom');

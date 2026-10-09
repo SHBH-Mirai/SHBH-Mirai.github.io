@@ -13,12 +13,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=5">
+<link rel="stylesheet" href="assets/style.css?v=8">
+<link rel="stylesheet" href="assets/mockups/kit.css?v=7">
+<!-- Mark the page as "JavaScript is running" so scroll animations may hide content until it scrolls in. -->
+<script>
+  document.documentElement.classList.add('js');
+  // Safety net: if the page scripts fail, un-hide all sections after 3 seconds.
+  setTimeout(function () { if (!document.querySelector('.rv.in')) document.documentElement.classList.remove('js'); }, 3000);
+</script>
 <!-- If JavaScript is off, show every section instead of waiting for the scroll animation. -->
-<noscript><style>.rv{opacity:1;transform:none}#boot{display:none}</style></noscript>
+<noscript><style>#boot{display:none}</style></noscript>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
 
 <!-- Loading screen: shown only on someone's first-ever visit (site.js runs it). -->
 <div id="boot" aria-hidden="true"><div><pre id="bootlog"></pre><div class="bar"><i id="bootbar"></i></div></div></div>
@@ -52,9 +60,9 @@
       <p class="sr-only">I turn manual processes into apps that run themselves.</p>
       <p class="type" id="type" aria-hidden="true"></p>
       <div class="facts">
-        <div><b id="yrs">5+</b><span>Years of experience</span></div>
-        <div><b id="nproj">16</b><span>Projects featured</span></div>
-        <div><b>4</b><span>Microsoft certifications</span></div>
+        <a href="#experience"><b id="yrs">5+</b><span>Years of experience</span></a>
+        <a href="#projects"><b id="nproj">16</b><span>Projects featured</span></a>
+        <a href="#ach"><b>4</b><span>Microsoft certifications</span></a>
       </div>
       <div class="btns"><a class="btn p" href="#projects">View projects</a><a class="btn" href="#contact">Contact me</a></div>
     </div>
@@ -73,9 +81,9 @@
         <dt>Current role</dt><dd>Associate – Projects</dd>
         <dt>Previous role</dt><dd>Application Development Analyst</dd>
         <dt>Location</dt><dd>India · IST (UTC+5:30)</dd>
-        <dt>Industries</dt><dd>Healthcare · Banking · Field operations</dd>
-        <dt>Domains</dt><dd>Sales · Customer Service · Project Service</dd>
-        <dt>Interests</dt><dd>Deep space &amp; astrophysics</dd>
+        <dt>Industries</dt><dd><button type="button" class="lnk2" data-find="healthcare">Healthcare</button> · <button type="button" class="lnk2" data-find="banking">Banking</button> · <button type="button" class="lnk2" data-find="coatings|truck|utility|field">Field operations</button></dd>
+        <dt>Domains</dt><dd><button type="button" class="lnk2" data-find="sales|cpq|quote">Sales</button> · <button type="button" class="lnk2" data-find="customer service|case">Customer Service</button> · <button type="button" class="lnk2" data-find="project service">Project Service</button></dd>
+        <dt>Interests</dt><dd><button type="button" class="lnk2" data-play>Deep space &amp; astrophysics <span aria-hidden="true">☄</span><span class="sr-only"> (plays the Meteor Defense game)</span></button></dd>
       </dl>
     </div>
   </div>
@@ -87,7 +95,7 @@
   <div class="head rv"><div><div class="kicker">Projects</div><h2>Selected work</h2></div><p class="note">Selected applications. Names are generalised and sensitive details are blurred.</p></div>
   <div class="qwrap">
     <div class="rv"><div class="qfil" id="qfil" role="group" aria-label="Filter projects by technology"></div><div class="qlist" id="qlist"></div></div>
-    <div class="qd frame rv" id="qd" aria-live="polite"></div>
+    <div class="qd frame rv" id="qd"></div>
   </div>
 </div></section>
 
@@ -95,9 +103,9 @@
   <div class="head rv"><div><div class="kicker">Experience</div><h2>Career timeline</h2></div><p class="note">Most recent first.</p></div>
   <div class="map" id="map">
     <svg class="path" aria-hidden="true"><line id="mapLine" x1="11" y1="0" x2="11" y2="100%" stroke="var(--mag)" stroke-width="2" stroke-dasharray="4 6"/></svg>
-    <div class="chap frame rv"><span class="star"></span><div class="n">Jan 2025 – Present</div><h3>Associate – Projects</h3><div class="w">Dynamics 365 Project Service Automation</div>
+    <div class="chap frame rv" data-rel="Project Service Automation"><span class="star"></span><div class="n">Jan 2025 – Present</div><h3>Associate – Projects</h3><div class="w">Dynamics 365 Project Service Automation</div>
       <ul><li>Built a centralized Canvas service hub that automates key steps, with Copilot-assisted automation.</li><li>Integrating the ChatGPT API to auto-create process flows and architecture diagrams for faster delivery documentation.</li><li>Mapping processes with stakeholders and translating requirements into Power Platform solutions.</li></ul></div>
-    <div class="chap frame rv"><span class="star"></span><div class="n">Feb 2021 – Jan 2025</div><h3>Application Development Analyst</h3><div class="w">Healthcare Dynamics 365 &amp; Issue Tracker</div>
+    <div class="chap frame rv" data-rel="Healthcare Member|Issue Tracker"><span class="star"></span><div class="n">Feb 2021 – Jan 2025</div><h3>Application Development Analyst</h3><div class="w">Healthcare Dynamics 365 &amp; Issue Tracker</div>
       <ul><li>Built custom APIs and Power Platform custom connectors to streamline healthcare data flows and reduce processing delays.</li><li>Designed a model-driven app and automated case processes with business rules and Power Automate.</li><li>Integrated Canvas apps with D365 CE and added AI Builder / chatbot capabilities.</li><li>Customized SharePoint sites and lists, built delegation-safe Canvas apps and embedded Power BI analytics.</li></ul></div>
     <div class="chap frame rv"><span class="star"></span><div class="n">2016 – 2020 · Education</div><h3>Galgotias University</h3><div class="w">B.Tech · Electrical &amp; Electronic Engineering</div>
       <ul><li>Final-year build: an IoT-based accident prevention and detection system.</li></ul></div>
@@ -127,9 +135,16 @@
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Screenshot viewer"><button id="lbx" type="button" aria-label="Close screenshot">×</button><img alt=""></div>
 
 <!-- Data first, then page behaviour, then the 3D scene. -->
-<script src="assets/projects.js?v=3"></script>
-<script src="assets/profile.js?v=3"></script>
-<script src="assets/site.js?v=3"></script>
+<script src="assets/projects.js?v=4"></script>
+<script src="assets/profile.js?v=4"></script>
+<script src="assets/mockups/kit.js?v=7"></script>
+<script src="assets/mockups/apps.js?v=2"></script>
+<script src="assets/mockups/exact-a.js?v=5"></script>
+<script src="assets/mockups/exact-b.js?v=7"></script>
+<script src="assets/mockups/exact-c.js?v=9"></script>
+<script src="assets/site.js?v=7"></script>
+<script src="assets/motion.js?v=2"></script>
+<script src="assets/cards.js?v=2"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module" src="assets/space.js?v=5"></script>
 </body>

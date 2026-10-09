@@ -1,8 +1,10 @@
 // Portfolio data. Add screenshots to assets/img and list them under `imgs`.
 // Names are intentionally generic.
+// "mock" links each project to its interactive mockup in assets/mockups/apps.js.
 window.PROJECTS = [
   {
     title: "Inventory & Job Costing Platform",
+    mock: "inventory",
     org: "Coatings industry",
     tags: ["Canvas App", "Dataverse", "Power Automate"],
     summary: "End-to-end inventory app for an epoxy/flooring contractor: barcode check-in/check-out, chemicals, colours and supplies catalogues, stock ledger, and a Job Builder that calculates the product weight to pull per job from square footage, flake size and season.",
@@ -11,6 +13,7 @@ window.PROJECTS = [
   },
   {
     title: "Issue Tracker & Jira Approval Workflow",
+    mock: "tracker",
     org: "Enterprise IT",
     tags: ["Canvas App", "SharePoint", "Power Automate"],
     summary: "Document-driven issue tracker on SharePoint. A new file raises a Jira ticket, routes it to channel-specific approvers, and captures approver/requestor responses in a Canvas approval app.",
@@ -19,6 +22,7 @@ window.PROJECTS = [
   },
   {
     title: "Issue Analysis & Validation Dashboards",
+    mock: "analysis",
     org: "Banking",
     tags: ["Canvas App", "Power BI"],
     summary: "Analyst workspace to track issues through phases (Phase 1–3, Test Script, Interim/Final Validation) with SLA due dates and escalation counts, backed by a suite of Power BI reports.",
@@ -27,6 +31,7 @@ window.PROJECTS = [
   },
   {
     title: "Healthcare Member Services on D365",
+    mock: "health",
     org: "Healthcare",
     tags: ["Dynamics 365", "Custom Connector", "Power Automate"],
     summary: "Member search and case automation for a healthcare payer on Dynamics 365 Customer Service. Custom APIs and connectors look up members in the source system; inbound faxes become cases with document metadata.",
@@ -35,6 +40,7 @@ window.PROJECTS = [
   },
   {
     title: "Product Attribute Search & Reports",
+    mock: "attributes",
     org: "Manufacturing",
     tags: ["Canvas App", "Dataverse"],
     summary: "Engineering parts lookup: pick a category (e.g. connectors), filter by attributes with conditions, and generate ID-card, summary, commercial and technical reports. Includes bulk upload of BOM/item-group lists.",
@@ -43,6 +49,7 @@ window.PROJECTS = [
   },
   {
     title: "Invoice Extraction with AI Builder",
+    mock: "invoice",
     org: "Proof of concept",
     tags: ["AI Builder", "Power Automate"],
     summary: "Custom document-processing model that reads invoices (including non-English layouts) and extracts subject, date, service, amount and currency into Dataverse for automated processing.",
@@ -51,6 +58,7 @@ window.PROJECTS = [
   },
   {
     title: "Employee Onboarding (AI Builder form processing)",
+    mock: "onboarding",
     org: "Personal build",
     tags: ["Canvas App", "AI Builder", "SharePoint"],
     summary: "Onboarding app where new hires upload a passport, AI Builder reads the fields, they sign on-screen, and HR approves or rejects from a card dashboard.",
@@ -59,6 +67,7 @@ window.PROJECTS = [
   },
   {
     title: "My Expense (mobile)",
+    mock: "expense",
     org: "Personal build",
     tags: ["Canvas App", "Dataverse", "Power BI"],
     summary: "Phone-layout expense app: submit claims with receipts, approver queue, and an embedded Power BI category report.",
@@ -67,6 +76,7 @@ window.PROJECTS = [
   },
   {
     title: "Royal India Trucks – Sales CPQ App",
+    mock: "cpq",
     org: "Personal build",
     tags: ["Canvas App", "Power Automate", "Dataverse"],
     summary: "Configure-Price-Quote sales app: browse trucks with specs and ratings, configure engine/tyres/warranty, and build a priced booking with dealer cost and gross profit.",
@@ -75,6 +85,7 @@ window.PROJECTS = [
   },
   {
     title: "Desk & Parking Reservation",
+    mock: "desk",
     org: "Workplace services",
     tags: ["Canvas App", "SharePoint"],
     summary: "Hot-desk and car-slot booking with desk maps, priority/VIP desks, admins and check-in status, on SharePoint lists.",
@@ -83,6 +94,7 @@ window.PROJECTS = [
   },
   {
     title: "HR Training & Onboarding Hub",
+    mock: "hr",
     org: "Personal build",
     tags: ["Canvas App", "SharePoint", "Power Automate"],
     summary: "Kanban-style onboarding board (In progress / Hired / Training), training requests with manager and HR approval, and a personal activity dashboard with light and dark themes.",
@@ -91,6 +103,7 @@ window.PROJECTS = [
   },
   {
     title: "Timesheet, Calendar & Utility Apps",
+    mock: "utility",
     org: "Personal builds",
     tags: ["Canvas App", "Power Automate"],
     summary: "A collection of smaller apps: fortnightly timesheet with approvals, SharePoint event calendar (monthly/weekly), daily PERSTAT reporting, parking slots, and a to-do app with weather on the login screen.",
@@ -99,6 +112,7 @@ window.PROJECTS = [
   },
   {
     title: "Project Service Automation: Activity Generation",
+    mock: "psa",
     org: "Professional services",
     tags: ["Dynamics 365", "Power Automate", "Copilot"],
     summary: "Scheduled activity generation in D365 PSA with holiday checks via child flows. Also built CSV-to-JSON parsing and Excel → SharePoint import flows for the service hub.",
@@ -107,6 +121,7 @@ window.PROJECTS = [
   },
   {
     title: "SharePoint Document Viewer",
+    mock: "docviewer",
     org: "Personal build",
     tags: ["Canvas App", "SharePoint"],
     summary: "Read and upload any document from a Canvas app: files live in a SharePoint library, open in an in-app PDF viewer, with user-specific folders.",
@@ -115,6 +130,7 @@ window.PROJECTS = [
   },
   {
     title: "Exemption Request Application",
+    mock: "exemption",
     org: "Enterprise IT",
     tags: ["Canvas App", "SharePoint", "Power Automate"],
     summary: "Delivery project in a developer role: an exemption-request app with SharePoint sites and lists, supporting flows, and access controlled through Azure AD groups.",
@@ -123,6 +139,7 @@ window.PROJECTS = [
   },
   {
     title: "Vaccine Slot Alert App",
+    mock: "vaccine",
     org: "Personal build",
     tags: ["Canvas App", "Power Automate"],
     summary: "Register once and get notified as soon as vaccine slots open near you.",
